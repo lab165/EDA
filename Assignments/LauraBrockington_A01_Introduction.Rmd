@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: "Laura Brockington"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -32,29 +32,34 @@ This setting will help deal with relative paths later on...
  - From the Tool menu, select `Global Options`
  - Select the RMarkdown section
  - In the "Evaluate chunks in directory", set the option to "Project"
-
+ 
 
 ## 2) Discussion Questions
 Enter answers to the questions just below the >Answer: prompt.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer:
+I took Stats with John Poulsen last year, and although I had taken a statistics class in undergrad, that course was my first expsure to R and programming. I have since used R (specifically the lidR package) for my masters project, but feel I could use a stronger base understanding of the program. I have no experience using Git.
 
 2. Are there any components of the course about which you feel confident?
 
 > Answer: 
+I feel confident in my understanding of basic code and my ability to troubleshoot any issues.
 
 3. Are there any components of the course about which you feel apprehensive?
 
 > Answer: 
+To be completely honest, I don't remember the data analysis methods that well from Stats last year (i.e. linear models, ANOVA, etc), but I do think this course will be a great refresher.
 
 
 ## 3) GitHub
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file, committed those changes, and pushed them to your GitHub account. 
 
-> Answer: 
+> Answer:
+https://github.com/lab165/EDA.git
+
 
 ## 4) Knitting
 When you have completed this document, click the `knit` button.This should produce a PDF copy of your markdown document. Submit this PDF to Sakai. 
