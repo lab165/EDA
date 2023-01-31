@@ -30,7 +30,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 4.  Insert comments in your code to describe what you are doing.
 
-```{r}
+```{r, Basics Day 1}
 #1. 
 seq100x4 <- seq(1,100,4) #creating a sequence from 1 to 100 by 4; sequence is named seq100x4
 seq100x4 #printing the output of the sequence code
@@ -53,22 +53,41 @@ x > y #asking R if the mean is greater than the median
 
 8.  Label the columns of your data frame with informative titles.
 
-```{r}
+```{r, Basics Day 2}
+student_names <- c("Jill", "Terry", "Fred", "Kate") #creating a vector of student names
+class(student_names) #determining the class of the vector
+#student_names is a vector of type character
+test_scores <- c(100, 48, 97, 80) #creating a vector of test scores
+class(test_scores) #determining the class of the vector
+#test_scores is a vector of type numeric
+pass_test <- c(TRUE, FALSE, TRUE, TRUE) #creating a vector of whether the student passed the test or not 
+class(pass_test) #determining the class of the vector
+#pass_test is a vector of type logical
 
+df_student_grades <- as.data.frame(student_names) #creating a data frame with the student names
+cbind(df_student_grades, test_scores, pass_test) #adding the test scores and if the student passed the test to the data frame
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
 
-> Answer:
+> Answer: This data frame is different from a matrix because it contains multiple types of data (character, numeric, and logical). Matrices can only have one type of data.
 
 10. Create a function with an if/else statement. Your function should take a **vector** of test scores and print (not return) whether a given test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. 
 
 11. Apply your function to the vector with test scores that you created in number 5.
 
 ```{r}
+pass_grade <- function(x) {
+  if(x >= 50) {print(TRUE)}
+  else {print(FALSE)}
+} #creating a function to determine if the student passed the test with if and else
+pass_grade2 <- function(x) {
+  ifelse(x >= 50, TRUE, FALSE)
+} #creating a function to determine if the student passed the test with ifelse
 
+pass_grade2(test_scores) #seeing if the function works on a vector
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer:
+> Answer: Only 'ifelse' worked for my 'test_scores' vector because the if and else function is only designed to work with things that are a length of one. You have to use the ifelse function if you have something with more than one component, such as our vector.
