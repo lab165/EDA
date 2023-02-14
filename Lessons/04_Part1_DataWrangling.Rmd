@@ -23,9 +23,9 @@ Opening discussion: why might we be interested in long-term observations of temp
 
 ```{r, message = FALSE}
 getwd()
-#install.packages(tidyverse)
+#install.packages("tidyverse")
 library(tidyverse)
-#install.packages(lubridate)
+#install.packages("lubridate")
 library(lubridate)
 NTL.phys.data <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv", stringsAsFactors = TRUE)
 
@@ -63,12 +63,12 @@ vignette("dplyr")
 Filtering allows us to choose certain rows (observations) in our dataset.
 
 Here are the relevant commands used in the `filter` function. Add some notes to designate what these commands mean. 
-`==`
+`==` equal to
 `!=`
-`<`
-`<=`
-`>`
-`>=`
+`<` less than
+`<=` less than or equal to
+`>` greater than
+`>=` greater than or equal to
 `&`
 `|`
 
