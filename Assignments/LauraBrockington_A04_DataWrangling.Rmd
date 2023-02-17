@@ -4,13 +4,17 @@ author: "Laura Brockington"
 date: "Spring 2023"
 output: pdf_document
 geometry: margin=2.54cm
+header-includes:
+  \usepackage{fvextra}
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, idy.opts=list(width.cutoff=60)}
 #This code chunk will tidy your knit PDF files, wrapping long code lines
 #For it to work, the "formatR" package needs to be installed
 
 #install.packages('formatR')
+library(formatR)
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
 ```
 
@@ -40,6 +44,9 @@ The completed exercise is due on Friday, Feb 20th @ 5:00pm.
 2. Apply the `glimpse()` function to reveal the dimensions, column names, and structure of each dataset. 
 
 ```{r, message = FALSE}
+#the formatR package nor the width cutoff worked to keep my code from running off the page when I knit, so I added this to the header "header-includes:
+  #\usepackage{fvextra}
+  #\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}"
 #1a 
 library(tidyverse) #loading necessary packages
 library(lubridate)
@@ -47,10 +54,10 @@ library(here)
 #1b 
 getwd() #checking working directory
 #1c 
-o3_2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", header=TRUE, stringsAsFactors = TRUE) #reading in datasets
-o3_2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", header=TRUE, stringsAsFactors = TRUE)
-pm25_2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", header=TRUE, stringsAsFactors = TRUE)
-pm25_2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", header=TRUE, stringsAsFactors = TRUE)
+o3_2018 <- read.csv(file=here("./Data/Raw/EPAair_O3_NC2018_raw.csv"), header=TRUE, stringsAsFactors = TRUE) #reading in datasets
+o3_2019 <- read.csv(file=here("./Data/Raw/EPAair_O3_NC2019_raw.csv"), header=TRUE, stringsAsFactors = TRUE)
+pm25_2018 <- read.csv(file=here("./Data/Raw/EPAair_PM25_NC2018_raw.csv"), header=TRUE, stringsAsFactors = TRUE)
+pm25_2019 <- read.csv(file=here("./Data/Raw/EPAair_PM25_NC2019_raw.csv"), header=TRUE, stringsAsFactors = TRUE)
 #2 
 glimpse(o3_2018) #reavealing the structure and columns of each dataset
 glimpse(o3_2019)
@@ -116,15 +123,17 @@ write.csv(pm25_2019_subset, row.names = FALSE,
 11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1819_Processed.csv"
 
 ```{r}
-#7 
+#7
 o3_2018$Daily.Mean.PM2.5.Concentration <- NA #adding columns with NA so the dataframes match
 o3_2019$Daily.Mean.PM2.5.Concentration <- NA
 pm25_2018$Daily.Max.8.hour.Ozone.Concentration <- NA
 pm25_2019$Daily.Max.8.hour.Ozone.Concentration <- NA
 EPAair_combine <- rbind(o3_2018, o3_2019, pm25_2018, pm25_2019) #combining the 4 datasets
-#8 
-EPAair_combine_processed <- 
+#8
+EPAair_combine_processed <- #wrangling dataset with a pipe function to fulfull the above requirements
   EPAair_combine %>%
+  mutate_at(c('Site.Name'), ~na_if(.,"")) %>%
+  drop_na(Site.Name) %>%
   filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett" | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School") %>%
   group_by(Date, Site.Name, AQS_PARAMETER_CODE, COUNTY) %>%
   summarize(mean_AQI = mean(DAILY_AQI_VALUE),
@@ -133,11 +142,21 @@ EPAair_combine_processed <-
   mutate(month = month(Date)) %>%
   mutate(year = year(Date))
 #9
-EPAair_spread <- pivot_wider(EPAair_combine_processed, names_from = nutrient, values_from = mean_AQI)
+EPAair_by_AQI_type <- EPAair_combine_processed #duplicating dataset
+EPAair_by_AQI_type <- pivot_wider(EPAair_by_AQI_type, names_from = AQS_PARAMETER_CODE, values_from = mean_AQI) #spreading the AQI_type column 
+colnames(EPAair_by_AQI_type)[8] ="PM2.5a" #changing column names
+colnames(EPAair_by_AQI_type)[9] ="o3"
+colnames(EPAair_by_AQI_type)[10] ="PM2.5b"
+EPAair_by_AQI_type["PM2.5a"][is.na(EPAair_by_AQI_type["PM2.5a"])] <- 0 #setting NAs to 0
+EPAair_by_AQI_type["PM2.5b"][is.na(EPAair_by_AQI_type["PM2.5b"])] <- 0
+EPAair_by_AQI_type$PM2.5 <- (EPAair_by_AQI_type$PM2.5a + EPAair_by_AQI_type$PM2.5b) #summing the two PM2.5 columns and adding to new column
+EPAair_by_AQI_type <- EPAair_by_AQI_type[,-8] #removing extra columns
+EPAair_by_AQI_type <- EPAair_by_AQI_type[,-9]
+EPAair_by_AQI_type["PM2.5"][EPAair_by_AQI_type["PM2.5"] == 0] <- NA #changing 0 back to NAs
 #10
-dim(???) #calling dimensions of dataset
+dim(EPAair_by_AQI_type) #calling dimensions of dataset
 #11
-write.csv(???, row.names = FALSE, 
+write.csv(EPAair_by_AQI_type, row.names = FALSE, 
           file = "./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv") #saving dataset
 ```
 
@@ -149,15 +168,17 @@ write.csv(???, row.names = FALSE,
 13. Call up the dimensions of the summary dataset.
 
 ```{r}
-
 #12
-
-
+EPAair_summary <- #generating summary data frame grouped by site, month, and year with mean AQI values for ozone and PM2.5, then dropping rows with NAs as mean AQI for ozone or o3
+  EPAair_by_AQI_type %>%
+  group_by(Site.Name, month, year) %>%
+  summarize(mean_AQI_o3 = mean(o3),
+            mean_AQI_PM2.5 = mean(PM2.5)) %>%
+  drop_na(mean_AQI_o3)
 #13
-
-
+dim(EPAair_summary) #calling dimensions of dataset
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: We used drop_na( ) because it eleminates any row that has a missing (i.e. NA) value from the specified column, while na.omit() elimanates any row with NA anywhere in the dataframe. In this case, we only wanted to omit those rows with NAs in the ozone column, so drop_na was a better choice.
