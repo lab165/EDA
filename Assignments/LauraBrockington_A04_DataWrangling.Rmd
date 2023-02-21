@@ -132,8 +132,6 @@ EPAair_combine <- rbind(o3_2018, o3_2019, pm25_2018, pm25_2019) #combining the 4
 #8
 EPAair_combine_processed <- #wrangling dataset with a pipe function to fulfull the above requirements
   EPAair_combine %>%
-  mutate_at(c('Site.Name'), ~na_if(.,"")) %>%
-  drop_na(Site.Name) %>%
   filter(Site.Name == "Linville Falls" | Site.Name == "Durham Armory" | Site.Name == "Leggett" | Site.Name == "Hattie Avenue" | Site.Name == "Clemmons Middle" | Site.Name == "Mendenhall School" | Site.Name == "Frying Pan Mountain" | Site.Name == "West Johnston Co." | Site.Name == "Garinger High School" | Site.Name == "Castle Hayne" | Site.Name == "Pitt Agri. Center" | Site.Name == "Bryson City" | Site.Name == "Millbrook School") %>%
   group_by(Date, Site.Name, AQS_PARAMETER_CODE, COUNTY) %>%
   summarize(mean_AQI = mean(DAILY_AQI_VALUE),
