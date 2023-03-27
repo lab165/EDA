@@ -252,9 +252,14 @@ GaringerOzone.monthly.nonseasonal <-
          Date = GaringerOzone.monthly$Date)
 
 #16
+GaringerOzone.nonseasonal.ts <- 
+  ts(GaringerOzone.monthly.nonseasonal$Non_seasonal, 
+                               start = c(f_year, f_month), 
+                               frequency = 12) #creating time series object
+
 #running non-seasonal Mann-Kendall on monthly average after removing seasonality
 GaringerOzone.monthly.nonseasonal.trend <-
-  trend::mk.test(GaringerOzone.monthly.nonseasonal$Non_seasonal)
+  trend::mk.test(GaringerOzone.nonseasonal.ts)
 summary(GaringerOzone.monthly.nonseasonal.trend)
 GaringerOzone.monthly.nonseasonal.trend
 ```
