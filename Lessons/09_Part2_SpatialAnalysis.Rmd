@@ -117,22 +117,23 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-
+huc8_sf <- st_read('./Data/Spatial/NCHUC8.shp')
 
 #Reveal the columns
-
+colnames(huc8_sf)
 
 #Check the CRS
-
+st_crs(huc8_sf)
 
 #Examine some records
 head(huc8_sf)
 
 #View the data as a map, colored by the acreage in each
+mapView(huc8_sf, zcol = "ACRES")
 
-
-
-
+ggplot() +
+  geom_sf(data = huc8_sf, aes(fill = ACRES)) +
+  scale_fill_distiller(palette = "YlOrRd")
 ```
 
 ### 2.2.3 Challenge!
@@ -141,14 +142,15 @@ head(huc8_sf)
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-
-
+neuse_sf<- st_read('./Data/Spatial/NCHUC8.shp') %>% 
+  filter(SUBBASIN == "Upper Neuse")
 
 #Create a map
+mapView(neuse_sf)
 
-
-
-
+ggplot() +
+  geom_sf(data = huc8_sf, fill = "purple", color = "grey") +
+  geom_sf(data = neuse_sf, fill = "orange")
 ```
 
 ### 2.2.4 Reading in GeoJSON data
@@ -334,6 +336,8 @@ Now that our data are all in a common planar coordinate systems, let's examine w
 In the exercise below, we'll subset one of the HUCs (Upper Neuse), and explore counties that spatially overlap with this selected HUC. You'll see there are two ways to subset data spatially.
 
 ```{r spatial.overlap.exercises}
+huc2_utm <- 
+
 #Clip the HUC2 data set by the NC State boundary dataset
 neuse_sf <- huc2_utm %>% 
   filter(DWQ_Basin == "Neuse")
